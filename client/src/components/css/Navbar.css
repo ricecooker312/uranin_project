@@ -1,0 +1,44 @@
+.nav-container {
+    background-color: rgb(61, 56, 56);
+    margin-bottom: 20px;
+}
+
+.nav-container::after {
+    display: table;
+    content: '';
+    clear: both;
+}
+
+.nav-header {
+    float: left;
+}
+
+.nav-real-header {
+    margin-bottom: 10px;
+}
+
+.nav-thing {
+    float: right;
+}
+
+.item {
+    list-style: none;
+    display: inline-block;
+    margin-right: 30px;
+    margin-top: 15px;
+    padding: 8px;
+}
+
+.a-tag {
+    margin-right: 30px;
+    margin-top: 15px;
+}
+
+.item a:hover {
+    color: rgb(223, 223, 223);
+}
+
+.item a {
+    color: white;
+    text-decoration: none;
+}
