@@ -17,8 +17,6 @@ require('dotenv').config()
 
 const indexPath = path.join(__dirname, '/client/build/index.html')
 
-// app.use( express.static( path.join(__dirname, '/client/build')) )
-
 if (process.env.NODE_ENV == "production") {
     app.use( express.static( path.join(__dirname, './client/build')) )
 
@@ -35,6 +33,10 @@ if (process.env.NODE_ENV == "production") {
     })
 
     app.get('/', (req, res) => {
+        res.sendFile(indexPath)
+    })
+
+    app.get('*', (req, res) => {
         res.sendFile(indexPath)
     })
 }
@@ -396,6 +398,10 @@ app.delete('/api/auth/logout', checkToken, (req, res) => {
             'message': "Successfully logged out!"
         })
     })
+})
+
+app.get('*', (req, res) => {
+    res.sendFile(indexPath)
 })
 
 app.listen(port, (err) => {
