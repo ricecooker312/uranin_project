@@ -57,7 +57,7 @@ if (process.env.NODE_ENV == "production") {
 //     res.sendFile(indexPath)
 // })
 
-const port = process.env.NODE_EXPRESS_PORT
+const port = process.env.PORT
 
 const tokenTypes = {
     access: 'access',
