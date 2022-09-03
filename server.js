@@ -20,23 +20,23 @@ const indexPath = path.join(__dirname, '/client/build/index.html')
 // app.use( express.static( path.join(__dirname, '/client/build')) )
 
 if (process.env.NODE_ENV == "production") {
-    app.use( express.static( path.join(__dirname, '/client/build')) )
+    app.use( express.static( path.join(__dirname, './client/build')) )
 
-    app.get('/accounts/login', (req, res) => {
-        res.sendFile(indexPath)
-    })
+    // app.get('/accounts/login', (req, res) => {
+    //     res.sendFile(indexPath)
+    // })
     
-    app.get('/accounts/register', (req, res) => {
-        res.sendFile(indexPath)
-    })
+    // app.get('/accounts/register', (req, res) => {
+    //     res.sendFile(indexPath)
+    // })
     
-    app.get('/accounts/change/password', (req, res) => {
-        res.sendFile(indexPath)
-    })
+    // app.get('/accounts/change/password', (req, res) => {
+    //     res.sendFile(indexPath)
+    // })
 
-    app.get('/', (req, res) => {
-        res.sendFile(indexPath)
-    })
+    // app.get('/', (req, res) => {
+    //     res.sendFile(indexPath)
+    // })
 }
 
 // app.get('/', (req, res) => {
