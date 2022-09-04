@@ -29,7 +29,7 @@ const tokenTypes = {
 }
 
 const addRefreshToken = (token) => {
-    pool.query('INSERT INTO refreshtokens (token) VALUES ($1)', [token], (err, results) => {
+    pool.query('INSERT INTO refreshtoken (token) VALUES ($1)', [token], (err, results) => {
         if (err) throw err
 
         return results
@@ -37,7 +37,7 @@ const addRefreshToken = (token) => {
 }
 
 const deleteRefreshToken = (token) => {
-    pool.query('DELETE FROM refreshtokens WHERE token = $1', [token], (err, results) => {
+    pool.query('DELETE FROM refreshtoken WHERE token = $1', [token], (err, results) => {
         if (err) throw err
 
         return results
@@ -224,7 +224,7 @@ app.post('/api/auth/refresh', (req, res) => {
             'error': 'Unauthorized'
         })
 
-        pool.query('SELECT token FROM refreshtokens WHERE token = $1', [rtoken], (err, results) => {
+        pool.query('SELECT token FROM refreshtoken WHERE token = $1', [rtoken], (err, results) => {
             if (err) throw err
     
             if (results.rowCount == 0) { return res.status(400).send({
