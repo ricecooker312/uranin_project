@@ -10,6 +10,8 @@ import Button from '../components/Button'
 import Textfield from '../components/Textfield'
 import Alert from '../components/Alert'
 
+import './css/Profile.css'
+
 const Profile = () => {
   const navigate = useNavigate()
 
@@ -95,25 +97,25 @@ const Profile = () => {
             <Header type={'h1'}>Your Profile</Header>
         </Item>
         <Item space={'full'}>
-            <Textfield label={'Username'} type={'text'} defaultValue={username} onChange={(e) => {
+            <Textfield className='profile-field' label={'Username'} type={'text'} defaultValue={username} onChange={(e) => {
                 if (e.target.value === "") setUsername(null)
                 else setUsername(e.target.value)
             }} />
         </Item>
         <Item space={'full'}>
-            <Textfield label={'Name'} type={'text'} defaultValue={name} onChange={(e) => {
+            <Textfield className='profile-field' label={'Name'} type={'text'} defaultValue={name} onChange={(e) => {
                 if (e.target.value === "") setName(null)
                 else setName(e.target.value)
             }} />
         </Item>
         <Item space={'full'}>
-            <Textfield label={'Age'} type={'number'} defaultValue={age} onChange={(e) => {
+            <Textfield className='profile-field' label={'Age'} type={'number'} defaultValue={age} onChange={(e) => {
                 if (e.target.value === "") setAge(null)
                 else setAge(e.target.value)
             }} />
         </Item>
         <Item space={'full'}>
-            <Textfield label={'Email'} type={'text'} defaultValue={email} onChange={(e) => {
+            <Textfield className='profile-field' label={'Email'} type={'text'} defaultValue={email} onChange={(e) => {
                 if (e.target.value === "") setEmail(null)
                 else setEmail(e.target.value)
             }} />

@@ -11,7 +11,8 @@ const Textfield = ({
     label,
     name,
     required,
-    onChange
+    onChange,
+    className
 }) => {
   if (!required) {
     return (
@@ -19,7 +20,7 @@ const Textfield = ({
             <label className='textfield-label' htmlFor={name}>{label}</label>
             <br />
             <input 
-            className='textfield-input' 
+            className={`textfield-input ${className}`} 
             value={value} 
             defaultValue={defaultValue} 
             type={type} 
@@ -38,7 +39,7 @@ const Textfield = ({
             <label className='textfield-label' htmlFor={name}>{label}</label>
             <br />
             <input 
-            className='textfield-input' 
+            className={`textfield-input ${className}`}
             value={value} 
             defaultValue={defaultValue} 
             type={type} 
