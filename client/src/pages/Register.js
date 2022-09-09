@@ -26,45 +26,49 @@ const Register = () => {
 
   useEffect(() => {
     if (isAuthenticated()) navigate('/')
+    else {
+        localStorage.clear()
+        document.title = 'Register | Club Manager'
+    }
   })
   
   const register = () => {
-    console.log(email.split('@').length)
-    if (email.split('@').length !== 2) setError('Invalid email')
-
-    const registerPayload = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-            name: name,
-            email: email,
-            username: username,
-            age: age,
-            password: password,
-            passwordc: passwordc
+    if (email.split('@').length !== 2) setError('That email is invalid')
+    else {
+        const registerPayload = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                name: name,
+                email: email,
+                username: username,
+                age: age,
+                password: password,
+                passwordc: passwordc
+            })
+        }
+    
+        fetch('/api/auth/register', registerPayload)
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) setError(data.error)
+            else {
+                const atl = localStorage.getItem("atoken")
+                const rtl = localStorage.getItem("rtoken")
+    
+                if (atl || rtl) throw new Error('User already logged in')
+                else {
+                    localStorage.setItem("atoken", data.accessToken)
+                    localStorage.setItem("rtoken", data.refreshToken)
+    
+                    window.location = '/'
+                }
+            }
         })
     }
-
-    fetch('/api/auth/register', registerPayload)
-    .then(res => res.json())
-    .then(data => {
-        if (data.error) setError(data.error)
-        else {
-            const atl = localStorage.getItem("atoken")
-            const rtl = localStorage.getItem("rtoken")
-
-            if (atl || rtl) throw new Error('User already logged in')
-            else {
-                localStorage.setItem("atoken", data.accessToken)
-                localStorage.setItem("rtoken", data.refreshToken)
-
-                window.location = '/'
-            }
-        }
-    })
   }
 
   return (

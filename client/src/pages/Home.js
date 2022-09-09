@@ -20,19 +20,8 @@ const Home = () => {
       setAuthenticated(false)
     }
     else {
+      setUser('logged in')
       setAuthenticated(true)
-
-      const token = refreshToken(localStorage.getItem("rtoken"))
-
-      const profilePayload = {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      }
-
-      fetch('/api/auth/user/profile', profilePayload)
-      .then(res => res.json())
-      .then(data => setUser(data))
     }
   }, [])
 
@@ -40,16 +29,7 @@ const Home = () => {
     if (user !== null) return (
       <Group>
         <Item className={'center'}>
-          <Header type={'h1'}>Hello, {user.username}</Header>
-        </Item>
-        <Item className={'center'}>
-          <Paragraph>We have sent verification to {user.email}</Paragraph>
-        </Item>
-        <Item className={'center'}>
-          <Paragraph>Hello, {user.name}</Paragraph>
-        </Item>
-        <Item className={'center'}>
-          <Paragraph>You are {user.age} years old</Paragraph>
+          <Header type={'h1'}>You have no clubs</Header>
         </Item>
       </Group>
     )

@@ -18,7 +18,10 @@ const Login = () => {
 
   useEffect(() => {
     if (isAuthenticated()) navigate('/')
-    else localStorage.clear()
+    else {
+      localStorage.clear()
+      document.title = 'Login | Club Manager'
+    }
   }, [])
 
   const [username, setUsername] = useState(null)
@@ -41,7 +44,10 @@ const Login = () => {
   fetch('/api/auth/login', loginPayload)
   .then(res => res.json())
   .then(data => {
-    if (data.error) setError(data.error)
+    if (data.error) {
+      setError(data.error)
+      setPassword("")
+    }
     else {
       const atl = localStorage.getItem("atoken")
       const rtl = localStorage.getItem("rtoken")

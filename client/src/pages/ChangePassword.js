@@ -17,6 +17,7 @@ const ChangePassword = () => {
 
   useEffect(() => {
     if (!isAuthenticated()) navigate('/')
+    else document.title = 'Change Your Password | Club Manager'
   })
 
   const [oldPassword, setOldPassword] = useState(null)

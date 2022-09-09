@@ -1,0 +1,11 @@
+.alert {
+    background-color: rgb(239, 139, 139);
+    width: 80%;
+    border-radius: 5px;
+}
+
+.alert {
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+} 
