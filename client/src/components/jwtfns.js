@@ -31,3 +31,26 @@ export const refreshToken = (token) => {
 
     return localStorage.getItem("atoken")
 }
+
+export const replaceRefreshToken = (oldToken, newToken) => {
+    const deletePayload = {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            rtoken: oldToken
+        })
+    }
+
+    fetch('/api/auth/logout', deletePayload)
+    .then(res => res.json())
+    .then(data => {
+        if (data.error) throw new Error(data.error)
+        else {
+            localStorage.setItem("rtoken", newToken)
+        }
+    })
+
+    return localStorage.getItem("rtoken")
+}

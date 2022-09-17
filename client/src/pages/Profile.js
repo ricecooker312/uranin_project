@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 
-import { isAuthenticated, refreshToken } from '../components/jwtfns'
+import { isAuthenticated, refreshToken, replaceRefreshToken } from '../components/jwtfns'
 
 import Group from '../components/Group'
 import Item from '../components/Item'
@@ -95,8 +95,9 @@ const Profile = () => {
                 setError(data.error)
             }
             else if (data.message) {
+                localStorage.setItem("rtoken", data.refreshToken)
                 localStorage.setItem("atoken", data.accessToken)
-                navigate('/')
+                window.location.reload()
             }
         })
         .catch((err) => {

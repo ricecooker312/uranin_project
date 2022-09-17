@@ -75,11 +75,10 @@ const Register = () => {
   return (
     <Group className={'register-container'}>
         <Alert atype={'error'}>{error}</Alert>
-        <Group className={'first-half'}>
-            <Item className={'center'} space='full'>
-                <Header type={'h1'}>Register</Header>
-            </Item>
-        </Group>
+        <Item className={'center'} space='full'>
+            <Header type={'h1'}>Register</Header>
+        </Item>
+        <Group className={'flex-area'}>
         <Group className={'second-half'}>
             <Item space={'full'}>
                 <Textfield label={'Name'} type='text' required onChange={(e) => {
@@ -100,7 +99,27 @@ const Register = () => {
                 }} />
             </Item>
         </Group>
-        <Group className={'third-half'}></Group>
+        <Group className={'third-half'}>
+            <Item space={'full'}>
+                <Textfield label={'Age'} type='number' required onChange={(e) => {
+                    if (e.target.value === "") setAge(null)
+                    else setAge(e.target.value)
+                }} />
+            </Item>
+            <Item space={'full'}>
+                <Textfield label={'Password'} type='Password' required onChange={(e) => {
+                    if (e.target.value === "") setPassword(null)
+                    else setPassword(e.target.value)
+                }} />
+            </Item>
+            <Item space={'full'}>
+                <Textfield label={'Password Confirm'} type='Password' required onChange={(e) => {
+                    if (e.target.value === "") setPasswordC(null)
+                    else setPasswordC(e.target.value)
+                }} />
+            </Item>
+        </Group>
+        </Group>
         <Item space={'full'}>
             <Button size={'medium'} style='primary' onClick={register}>Register</Button>
         </Item>

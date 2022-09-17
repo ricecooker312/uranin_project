@@ -50,6 +50,32 @@ const deleteRefreshToken = (token) => {
     })
 }
 
+const decodeToken = (token, tokenType) => {
+    function decodeAccessToken(err, user) {
+        if (err) throw new Error(err)
+        else {
+            return user
+        }
+    }
+
+    function decodeRefreshToken(err, user) {
+        if (err) throw new Error(err)
+        else {
+            return user
+        }
+    }
+
+    if (tokenType == tokenTypes.access) {
+        const decoded = jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET, decodeAccessToken)
+
+        return decoded
+    } else if (tokenType === tokenTypes.refresh) {
+        const decoded = jwt.verify(token, jwt.JWT_REFRESH_TOKEN_SECRET, decodeRefreshToken)
+
+        return decoded
+    }
+}
+
 const generateToken = (user, tokenType) => {
     switch (tokenType) {
         case tokenTypes.access:
@@ -286,13 +312,15 @@ app.patch('/api/auth/update/', checkToken, (req, res) => {
         if (err) throw err
 
         const accessToken = generateToken({ username: username }, tokenTypes.access)
+        const refreshToken = generateToken({ username: username }, tokenTypes.refresh)
 
-        console.log('update results', results.rowCount)
-        console.log('username', username)
+        addRefreshToken(refreshToken)
+
 
         return res.status(200).send({
             'message': "User updated successfully!",
-            'accessToken': accessToken
+            'accessToken': accessToken,
+            'refreshToken': refreshToken
         })
     })
 })
