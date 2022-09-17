@@ -8,6 +8,7 @@ import Header from '../components/Header'
 import Item from '../components/Item'
 import Group from '../components/Group'
 import Paragraph from '../components/Paragraph'
+import Alert from '../components/Alert'
 
 import { isAuthenticated } from '../components/jwtfns'
 
@@ -46,7 +47,6 @@ const Login = () => {
   .then(data => {
     if (data.error) {
       setError(data.error)
-      setPassword("")
     }
     else {
       const atl = localStorage.getItem("atoken")
@@ -65,13 +65,7 @@ const Login = () => {
 
   return (
     <Group className={'login-container'}>
-        {error ? (
-          <Item className={'alert'} space={'full'}>
-            <Paragraph className='alert-error'>{error}</Paragraph>
-          </Item>
-        ) : (
-          <Item></Item>
-        )}
+        <Alert atype={'error'}>{error}</Alert>
         <Item space={'full'}>
             <Header type={'h1'}>Log In</Header>
         </Item>

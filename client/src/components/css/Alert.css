@@ -1,10 +1,22 @@
-.alert {
+.error {
     background-color: rgb(239, 139, 139);
     width: 80%;
     border-radius: 5px;
 }
 
-.alert {
+.error {
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 20px;
+} 
+
+.good {
+    background-color: rgb(152, 239, 139);
+    width: 80%;
+    border-radius: 5px;
+}
+
+.good {
     text-align: center;
     padding-top: 20px;
     padding-bottom: 20px;

@@ -80,9 +80,6 @@ const Navbar = () => {
             <Group className={'nav-thing'}>
                 <ul>
                     <li className='item'>
-                      <Link className='a-tag' to='/accounts/profile'>Profile</Link>
-                    </li>
-                    <li className='item'>
                         <Link className='a-tag' onClick={logout} to='/'>Logout</Link>
                     </li>
                     <li className='item'>

@@ -9,6 +9,7 @@ import Button from '../components/Button'
 import Group from '../components/Group'
 import Item from '../components/Item'
 import Paragraph from '../components/Paragraph'
+import Alert from '../components/Alert'
 
 import './css/ChangePassword.css'
 
@@ -23,6 +24,7 @@ const ChangePassword = () => {
   const [oldPassword, setOldPassword] = useState(null)
   const [newPassword, setNewPassword] = useState(null)
   const [newPasswordC, setNewPasswordC] = useState(null)
+  const [message, setMessage] = useState(null)
   const [error, setError] = useState()
 
   const changePassword = () => {
@@ -47,21 +49,20 @@ const ChangePassword = () => {
     .then(res => res.json())
     .then(data => {
         if (data.error) {
+            setMessage(null)
             console.log(data.error)
             setError(data.error)
-        } else navigate('/')
+        } else if (data.message) {
+          setError(null)
+          setMessage(data.message)
+        }
     })
   }
 
   return (
     <Group className={'login-container'}>
-        {error ? (
-          <Item className={'alert'} space={'full'}>
-            <Paragraph className='alert-error'>{error}</Paragraph>
-          </Item>
-        ) : (
-          <Item></Item>
-        )}
+        <Alert atype={'error'}>{error}</Alert>
+        <Alert atype={'good'}>{message}</Alert>
         <Item space={'full'}>
             <Header type={'h1'}>Change Your Password</Header>
         </Item>

@@ -17,7 +17,6 @@ function App() {
           <Route path='/accounts/login' element={<Login />} />
           <Route path='/accounts/register' element={<Register />} />
           <Route path='/accounts/change-password' element={<ChangePassword />} />
-          <Route path='/accounts/profile' element={<Profile />} />
           <Route path='*' element={<p>404 Page Not Found</p>} />
         </Routes>
       </Router>

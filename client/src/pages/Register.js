@@ -8,6 +8,7 @@ import Button from '../components/Button'
 import Textfield from '../components/Textfield'
 import Header from '../components/Header'
 import Paragraph from '../components/Paragraph'
+import Alert from '../components/Alert'
 
 import { isAuthenticated } from '../components/jwtfns'
 
@@ -73,52 +74,33 @@ const Register = () => {
 
   return (
     <Group className={'register-container'}>
-        {error ? (
-          <Item className={'alert'} space={'full'}>
-            <Paragraph className='alert-error'>{error}</Paragraph>
-          </Item>
-        ) : (
-          <Item></Item>
-        )}
-        <Item className={'center'} space='full'>
-            <Header type={'h1'}>Register</Header>
-        </Item>
-        <Item space={'full'}>
-            <Textfield label={'Name'} type='text' required onChange={(e) => {
-                if (e.target.value === "") setName(null)
-                else setName(e.target.value)
-            }} />
-        </Item>
-        <Item space={'full'}>
-            <Textfield label={'Email'} type='email' required onChange={(e) => {
-                if (e.target.value === "") setEmail(null)
-                else setEmail(e.target.value)
-            }} />
-        </Item>
-        <Item space={'full'}>
-            <Textfield label={'Username'} type='text' required onChange={(e) => {
-                if (e.target.value === "") setUsername(null)
-                else setUsername(e.target.value)
-            }} />
-        </Item>
-        <Item space={'full'}>
-            <Textfield label={'Age'} type='number' required onChange={(e) => {
-                if (e.target.value === "") setAge(null)
-                else setAge(e.target.value)
-            }} />
-        </Item>
-        <Item space={'full'}>
-            <Textfield label={'Password'} type='Password' required onChange={(e) => {
-                if (e.target.value === "") setPassword(null)
-                else setPassword(e.target.value)
-            }} />
-        </Item>
-        <Item space={'full'}>
-            <Textfield label={'Password Confirm'} type='Password' required onChange={(e) => {
-                if (e.target.value === "") setPasswordC(null)
-                else setPasswordC(e.target.value)
-            }} />
-        </Item>
+        <Alert atype={'error'}>{error}</Alert>
+        <Group className={'first-half'}>
+            <Item className={'center'} space='full'>
+                <Header type={'h1'}>Register</Header>
+            </Item>
+        </Group>
+        <Group className={'second-half'}>
+            <Item space={'full'}>
+                <Textfield label={'Name'} type='text' required onChange={(e) => {
+                    if (e.target.value === "") setName(null)
+                    else setName(e.target.value)
+                }} />
+            </Item>
+            <Item space={'full'}>
+                <Textfield label={'Email'} type='email' required onChange={(e) => {
+                    if (e.target.value === "") setEmail(null)
+                    else setEmail(e.target.value)
+                }} />
+            </Item>
+            <Item space={'full'}>
+                <Textfield label={'Username'} type='text' required onChange={(e) => {
+                    if (e.target.value === "") setUsername(null)
+                    else setUsername(e.target.value)
+                }} />
+            </Item>
+        </Group>
+        <Group className={'third-half'}></Group>
         <Item space={'full'}>
             <Button size={'medium'} style='primary' onClick={register}>Register</Button>
         </Item>

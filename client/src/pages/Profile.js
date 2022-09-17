@@ -16,11 +16,11 @@ const Profile = () => {
   const navigate = useNavigate()
 
   const [user, setUser] = useState(null)
-  const [username, setUsername] = useState()
-  const [name, setName] = useState()
-  const [age, setAge] = useState()
-  const [email, setEmail] = useState()
-  const [error, setError] = useState()
+  const [username, setUsername] = useState(null)
+  const [name, setName] = useState(null)
+  const [age, setAge] = useState(null)
+  const [email, setEmail] = useState(null)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -31,16 +31,24 @@ const Profile = () => {
         document.title = 'Your Profile | Club Manager'
 
         const rtl = localStorage.getItem("rtoken")
+        console.log(rtl)
+
         const atl = refreshToken(rtl)
+        console.log(atl)
 
         const profilePayload = {
             headers: {
-                'Authorization': `Bearer ${atl}`
+                'Authorization': `Bearer ${atl}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
             }
         }
 
         fetch('/api/auth/user/profile', profilePayload)
-        .then(res => res.json())
+        .then(res => {
+            console.log(res)
+            return res.json()
+        })
         .then(data => {
             if (data.error) throw new Error(data.error)
             else {
@@ -51,12 +59,17 @@ const Profile = () => {
                 setEmail(data.email)
             }
         })
+        .catch((err) => {
+            console.log('An error occured while getting your info: ', err)
+        })
     }
   }, [])
 
   const updateProfile = () => {
     if (email.split('@').length !== 2) setError('That email is invalid')
     else {
+        console.log(username, email, name, age)
+
         const rtl = localStorage.getItem("rtoken")
         const atl = refreshToken(rtl)
 
@@ -78,11 +91,16 @@ const Profile = () => {
         fetch('/api/auth/update', profileChangePayload)
         .then(res => res.json())
         .then(data => {
-            if (data.error) setError(data.error)
-            else {
-                console.log(data)
+            if (data.error) {
+                setError(data.error)
+            }
+            else if (data.message) {
+                localStorage.setItem("atoken", data.accessToken)
                 navigate('/')
             }
+        })
+        .catch((err) => {
+            console.log('An error occured while updating your info: ', err)
         })
     }
   }
@@ -98,6 +116,7 @@ const Profile = () => {
         </Item>
         <Item space={'full'}>
             <Textfield className='profile-field' label={'Username'} type={'text'} defaultValue={username} onChange={(e) => {
+                console.log(e.target.value)
                 if (e.target.value === "") setUsername(null)
                 else setUsername(e.target.value)
             }} />
@@ -120,7 +139,9 @@ const Profile = () => {
                 else setEmail(e.target.value)
             }} />
         </Item>
-        <Button style={'primary'} size={'medium'} onClick={updateProfile}>Save Changes</Button>
+        <Item space={'full'}>
+            <Button style={'primary'} size={'medium'} onClick={updateProfile}>Save Changes</Button>
+        </Item>
     </Group>
   )
 }

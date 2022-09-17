@@ -6,16 +6,19 @@ import Paragraph from './Paragraph'
 import './css/Alert.css'
 
 const Alert = ({
-    type,
+    atype,
     children
 }) => {
   const possibleTypes = [
-    'error'
+    'error',
+    'good'
   ]
+
+  const type = possibleTypes.includes(atype) ? atype : 'error'
 
   if (children) {
     return (
-        <Item className={'alert'} space='full'>
+        <Item className={`${type}`} space='full'>
             <Paragraph className={'alert-error'}>{children}</Paragraph>
         </Item>
     )

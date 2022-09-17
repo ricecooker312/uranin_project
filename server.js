@@ -15,10 +15,16 @@ const path = require('path')
 
 require('dotenv').config()
 
+const nodemailer = require('nodemailer')
+
 const indexPath = path.join(__dirname, 'client/build/index.html')
 
 if (process.env.NODE_ENV == "production") {
     app.use( express.static( path.join(__dirname, 'client/build')) )
+    
+    app.get('*', (req, res) => {
+        res.sendFile(indexPath)
+    })
 }
 
 const port = process.env.NODE_ENV === "production" ? process.env.PORT : 8000
@@ -63,13 +69,16 @@ const checkToken = (req, res, next) => {
     const token = tokenHeader.split(' ')[1]
 
     jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET, (err, user) => {
-        if (err) return res.status(200).send({
-            'error': 'Unauthorized'
-        })
+        if (err) {
+            console.log('jwt err: ', err)
+            return res.status(200).send({
+                'error': 'Unauthorized'
+            })
+        }
 
         req.user = user
 
-        next()
+        return next()
     })
 }
 
@@ -276,8 +285,14 @@ app.patch('/api/auth/update/', checkToken, (req, res) => {
     pool.query('UPDATE "user" SET name = $1, email = $2, age = $3, username = $4 WHERE username = $5', [name, email, age, username, req.user.username], (err, results) => {
         if (err) throw err
 
+        const accessToken = generateToken({ username: username }, tokenTypes.access)
+
+        console.log('update results', results.rowCount)
+        console.log('username', username)
+
         return res.status(200).send({
-            'message': "User updated successfully!"
+            'message': "User updated successfully!",
+            'accessToken': accessToken
         })
     })
 })
@@ -336,11 +351,13 @@ app.patch('/api/auth/update/password', checkToken, async (req, res) => {
 app.get('/api/auth/user/profile', checkToken, (req, res) => {
     pool.query('SELECT * FROM "user" WHERE username = $1', [req.user.username], (err, results) => {
         if (err) throw err
-        res.json(results.rows[0])
+        res.json(results.rows[0] ?? {
+            'error': "Something went wrong"
+        })
     })
 })
 
-app.delete('/api/auth/logout', checkToken, (req, res) => {
+app.delete('/api/auth/logout', (req, res) => {
     const { rtoken } = req.body
 
     if (!rtoken) {
@@ -362,10 +379,6 @@ app.delete('/api/auth/logout', checkToken, (req, res) => {
             'message': "Successfully logged out!"
         })
     })
-})
-
-app.get('*', (req, res) => {
-    res.sendFile(indexPath)
 })
 
 app.listen(port, (err) => {

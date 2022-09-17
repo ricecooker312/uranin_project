@@ -23,11 +23,20 @@ const Button = ({
     children,
     block,
     onClick,
-    className
+    className,
+    disabled
 }) => {
   const buttonStyle = styles.includes(style) ? style : styles[0]
   const buttonSize = sizes.includes(size) ? size : sizes[0]
   const buttonBlock = block ? " btn-block" : ""  
+
+  if (disabled) {
+    return (
+      <button className={`btn btn-${buttonStyle} btn-${buttonSize}${buttonBlock} ${className}`} onClick={onClick} disabled>
+          {children}
+      </button>
+    )
+  }
 
   return (
     <button className={`btn btn-${buttonStyle} btn-${buttonSize}${buttonBlock} ${className}`} onClick={onClick}>
