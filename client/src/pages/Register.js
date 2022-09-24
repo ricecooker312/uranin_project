@@ -29,7 +29,7 @@ const Register = () => {
     if (isAuthenticated()) navigate('/')
     else {
         localStorage.clear()
-        document.title = 'Register | Club Manager'
+        document.title = 'Register | Uranin'
     }
   })
   

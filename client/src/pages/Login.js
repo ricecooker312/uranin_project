@@ -21,7 +21,7 @@ const Login = () => {
     if (isAuthenticated()) navigate('/')
     else {
       localStorage.clear()
-      document.title = 'Login | Club Manager'
+      document.title = 'Login | Uranin'
     }
   }, [])
 

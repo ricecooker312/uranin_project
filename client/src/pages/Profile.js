@@ -28,7 +28,7 @@ const Profile = () => {
         navigate('/')
     }
     else {
-        document.title = 'Your Profile | Club Manager'
+        document.title = 'Your Profile | Uranin'
 
         const rtl = localStorage.getItem("rtoken")
         console.log(rtl)

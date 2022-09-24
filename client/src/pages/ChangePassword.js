@@ -18,7 +18,7 @@ const ChangePassword = () => {
 
   useEffect(() => {
     if (!isAuthenticated()) navigate('/')
-    else document.title = 'Change Your Password | Club Manager'
+    else document.title = 'Change Your Password | Uranin'
   })
 
   const [oldPassword, setOldPassword] = useState(null)

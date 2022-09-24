@@ -41,7 +41,7 @@ const Home = () => {
     return (
       <Group>
         <Item className={'center'} space='full'>
-          <Header type={'h1'}>The Best Club Manager Ever</Header>
+          <Header type={'h1'}>Uranin: The Best Club Manager Ever</Header>
         </Item>
         <Item className={'center'} space='full'>
           <Link to='/accounts/register'>
