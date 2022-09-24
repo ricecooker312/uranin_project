@@ -21,14 +21,12 @@ const Navbar = () => {
     if (!isAuthenticated()) throw new Error('User is not authenticated')
     else {
       const rtl = localStorage.getItem("rtoken")
-      const atl = refreshToken(rtl)
 
       const logoutPayload = {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': `Bearer ${atl}`
         },
         body: JSON.stringify({
           rtoken: rtl
@@ -43,8 +41,8 @@ const Navbar = () => {
           localStorage.clear()
           localStorage.removeItem("atoken")
 
-          navigate('/')
           window.location.reload()
+          navigate('/')
         }
       })
     }

@@ -316,7 +316,6 @@ app.patch('/api/auth/update/', checkToken, (req, res) => {
 
         addRefreshToken(refreshToken)
 
-
         return res.status(200).send({
             'message': "User updated successfully!",
             'accessToken': accessToken,
