@@ -409,6 +409,6 @@ app.delete('/api/auth/logout', (req, res) => {
 })
 
 app.listen(port, (err) => {
-    if (err) console.log(`ERROR: ${err}`)
+    if (err) console.log(`error: ${err}`)
     console.log(`Server is listening on port ${port}`)
 })
