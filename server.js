@@ -408,6 +408,12 @@ app.delete('/api/auth/logout', (req, res) => {
     })
 })
 
+app.use(express.static(__dirname)); //here is important thing - no static directory, because all static :)
+
+app.get("/*", function(req, res) {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
 app.listen(port, (err) => {
     if (err) console.log(`error: ${err}`)
     console.log(`Server is listening on port ${port}`)

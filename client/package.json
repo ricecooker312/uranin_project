@@ -37,5 +37,6 @@
     "react-scripts": "^5.0.1",
     "web-vitals": "^3.0.1"
   },
-  "proxy": "http://localhost:8000"
+  "proxy": "http://localhost:8000",
+  "homepage": "."
 }
