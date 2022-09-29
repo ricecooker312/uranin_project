@@ -15,9 +15,9 @@ const path = require('path')
 
 require('dotenv').config()
 
-const nodemailer = require('nodemailer')
-
 const indexPath = path.join(__dirname, 'client/build/index.html')
+
+const sendVerificationEmail = require('./mailer')
 
 if (process.env.NODE_ENV == "production") {
     app.use( express.static( path.join(__dirname, 'client/build')) )
@@ -171,16 +171,20 @@ app.post('/api/auth/register', async (req, res) => {
             ], async (err, results) => {
                 if (err) throw err
 
-                const user = { name: name, email: email, age: age, username: username }
+                pool.query('SELECT * FROM "user" WHERE username = $1', [username], (err, results) => {
+                    const user = { username: username }
 
-                const accessToken = generateToken(user, tokenTypes.access)
-                const refreshToken = generateToken(user, tokenTypes.refresh)
+                    const accessToken = generateToken(user, tokenTypes.access)
+                    const refreshToken = generateToken(user, tokenTypes.refresh)
 
-                addRefreshToken(refreshToken)
+                    addRefreshToken(refreshToken)
 
-                res.status(200).send({
-                    'accessToken': accessToken,
-                    'refreshToken': refreshToken
+                    sendVerificationEmail(results.rows[0].email, accessToken, refreshToken, results.rows[0].uid)
+
+                    res.status(200).send({
+                        'accessToken': accessToken,
+                        'refreshToken': refreshToken
+                    })
                 })
             })
         }
@@ -311,6 +315,7 @@ app.patch('/api/auth/update/', checkToken, (req, res) => {
     pool.query('UPDATE "user" SET name = $1, email = $2, age = $3, username = $4 WHERE username = $5', [name, email, age, username, req.user.username], (err, results) => {
         if (err) throw err
 
+
         const accessToken = generateToken({ username: username }, tokenTypes.access)
         const refreshToken = generateToken({ username: username }, tokenTypes.refresh)
 
@@ -404,6 +409,58 @@ app.delete('/api/auth/logout', (req, res) => {
 
         return res.status(200).send({
             'message': "Successfully logged out!"
+        })
+    })
+})
+
+app.delete('/api/auth/user/delete', (req, res) => {
+    const { rtoken } = req.body
+
+    if (!rtoken) return res.status(200).send({
+        'error': 'No refresh token was provided'
+    })
+
+    jwt.verify(rtoken, process.env.JWT_REFRESH_TOKEN_SECRET, (err, user) => {
+        if (err) { res.status(200).send({
+            'error': 'Invalid refresh token'
+        }) } else {
+            deleteRefreshToken(rtoken)
+
+            pool.query('DELETE FROM "user" WHERE username = $1', [user.username], (err, results) => {
+                if (err) throw err
+
+                return res.status(200).send({
+                    'message': 'User deleted successfully!'
+                })
+            })
+        }
+    })
+})
+
+app.patch('/api/auth/verify', checkToken, (req, res) => {
+    const { uid } = req.body
+
+    if (!uid) return res.status(200).send({
+        'error': 'No uid provided'
+    })
+
+    pool.query('SELECT * FROM "user" WHERE username = $1', [req.user.username], (err, results) => {
+        if (err) throw err
+
+        if (results.rows[0].username !== req.user.username) return res.status(200).send({
+            'error': 'Incorrect or invalid access token provided'
+        })
+
+        if (results.rows[0].uid !== uid) return res.status(200).send({
+            'error': 'Incorrect or invalid uid provided'
+        })
+
+        pool.query('UPDATE "user" SET verified = TRUE WHERE uid = $1', [uid], (err, results) => {
+            if (err) throw err
+
+            return res.status(200).send({
+                'message': 'User was updated successfully!'
+            })
         })
     })
 })

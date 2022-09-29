@@ -54,3 +54,23 @@ export const replaceRefreshToken = (oldToken, newToken) => {
 
     return localStorage.getItem("rtoken")
 }
+
+export const checkVerified = (rtoken) => {
+    const atl = refreshToken(rtoken)
+
+    const profilePayload = {
+        headers: {
+            'Authorization': `Bearer ${atl}`,
+            'Content-Type': 'application/json'
+        }
+    }
+
+    fetch('/api/auth/user/profile', profilePayload)
+    .then(res => res.json())
+    .then(json => {
+        if (json.verified === false) localStorage.setItem("verified", false)
+        else if (json.verified === true) localStorage.setItem("verified", true)
+    })
+
+    localStorage.getItem("verified")
+}

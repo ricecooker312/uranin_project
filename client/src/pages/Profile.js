@@ -21,6 +21,7 @@ const Profile = () => {
   const [age, setAge] = useState(null)
   const [email, setEmail] = useState(null)
   const [error, setError] = useState(null)
+  const [message, setMessage] = useState()
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -31,10 +32,7 @@ const Profile = () => {
         document.title = 'Your Profile | Uranin'
 
         const rtl = localStorage.getItem("rtoken")
-        console.log(rtl)
-
         const atl = refreshToken(rtl)
-        console.log(atl)
 
         const profilePayload = {
             headers: {
@@ -46,7 +44,6 @@ const Profile = () => {
 
         fetch('/api/auth/user/profile', profilePayload)
         .then(res => {
-            console.log(res)
             return res.json()
         })
         .then(data => {
@@ -68,8 +65,6 @@ const Profile = () => {
   const updateProfile = () => {
     if (email.split('@').length !== 2) setError('That email is invalid')
     else {
-        console.log(username, email, name, age)
-
         const rtl = localStorage.getItem("rtoken")
         const atl = refreshToken(rtl)
 
@@ -92,12 +87,14 @@ const Profile = () => {
         .then(res => res.json())
         .then(data => {
             if (data.error) {
+                setMessage(undefined)
                 setError(data.error)
             }
             else if (data.message) {
                 localStorage.setItem("rtoken", data.refreshToken)
                 localStorage.setItem("atoken", data.accessToken)
-                window.location.reload()
+                setError(undefined)
+                setMessage(data.message)
             }
         })
         .catch((err) => {
@@ -112,6 +109,7 @@ const Profile = () => {
   else return (
     <Group className={'login-container'}>
         <Alert>{error}</Alert>
+        <Alert atype={'good'}>{message}</Alert>
         <Item space={'full'}>
             <Header type={'h1'}>Your Profile</Header>
         </Item>

@@ -36,3 +36,19 @@
     color: rgb(55, 55, 255);
     outline: 2px solid rgb(55, 55, 255);
 }
+
+.btn-danger {
+    background-color: rgb(255, 55, 55);
+    color: white;
+    transition: 
+        background-color 200ms ease-in,
+        color 200ms ease-in,
+        border 200ms ease-in
+    ;
+}
+
+.btn-danger:hover {
+    background-color: white;
+    color: rgb(255, 55, 55);
+    outline: 2px solid rgb(255, 55, 55);
+}

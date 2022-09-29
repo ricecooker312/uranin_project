@@ -5,6 +5,8 @@ import Register from './pages/Register';
 import Navbar from './components/Navbar';
 import ChangePassword from './pages/ChangePassword';
 import Profile from './pages/Profile';
+import DeleteAccount from './pages/DeleteAccount';
+import VerifyEmail from './pages/VerifyEmail';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 function App() {
@@ -18,6 +20,8 @@ function App() {
           <Route path='/accounts/register' element={<Register />} />
           <Route path='/accounts/change-password' element={<ChangePassword />} />
           <Route path='/accounts/profile' element={<Profile />} />
+          <Route path='/accounts/delete-account' element={<DeleteAccount />} />
+          <Route path='/accounts/verify/:uid/:rtoken/:atoken' element={<VerifyEmail />} />
           <Route path='*' element={<p>404 Page Not Found</p>} />
         </Routes>
       </Router>

@@ -73,7 +73,7 @@ const Navbar = () => {
     <Group className={'nav-container'}>
         <nav className='nav'>
             <li className='item nav-header'>
-                <Link to='/'><Header className={'nav-real-header'} type={'h1'}>Home</Header></Link>
+                <Link to='/'><Header className={'nav-real-header'} type={'h1'}>Uranin</Header></Link>
             </li>
             <Group className={'nav-thing'}>
                 <ul>
@@ -85,6 +85,9 @@ const Navbar = () => {
                     </li>
                     <li className='item'>
                         <Link className='a-tag' to='/accounts/change-password'>Change Password</Link>
+                    </li>
+                    <li className='item'>
+                        <Link className='a-tag' to='/accounts/delete-account'>Delete Account</Link>
                     </li>
                 </ul>
             </Group>
