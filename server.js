@@ -19,16 +19,6 @@ const indexPath = path.join(__dirname, 'client/build/index.html')
 
 const sendVerificationEmail = require('./mailer')
 
-if (process.env.NODE_ENV == "production") {
-    app.use( express.static( path.join(__dirname, 'client/build')) )
-    
-    app.get('*', (req, res) => {
-        console.log('404 Not Found')
-        
-        res.sendFile(indexPath)
-    })
-}
-
 const port = process.env.NODE_ENV === "production" ? process.env.PORT : 8000
 
 const tokenTypes = {
@@ -466,6 +456,17 @@ app.patch('/api/auth/verify', checkToken, (req, res) => {
         })
     })
 })
+
+if (process.env.NODE_ENV == "production") {
+    app.use( express.static( path.join(__dirname, 'client/build')) )
+    
+    app.get('*', (req, res) => {
+        console.log('404 Not Found')
+        
+        res.sendFile(indexPath)
+    })
+}
+
 
 app.listen(port, (err) => {
     if (err) console.log(`error: ${err}`)
