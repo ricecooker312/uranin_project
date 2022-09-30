@@ -44,6 +44,7 @@ const Profile = () => {
 
         fetch('/api/auth/user/profile', profilePayload)
         .then(res => {
+            console.log(res.text())
             return res.json()
         })
         .then(data => {
