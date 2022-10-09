@@ -503,16 +503,6 @@ app.post('/api/auth/resend-verify', (req, res) => {
     })
 })
 
-if (process.env.NODE_ENV == "production") {
-    app.use( express.static( path.join(__dirname, 'client/build')) )
-    
-    app.get('*', (req, res) => {
-        console.log('404 Not Found')
-        
-        res.sendFile(indexPath)
-    })
-}
-
 app.get('/api/auth/user/profile/:username', (req, res) => {
     const username = req.params.username
 
@@ -603,6 +593,16 @@ app.patch('/api/auth/update/forgot-password', async (req, res) => {
         })
     })
 })
+
+if (process.env.NODE_ENV == "production") {
+    app.use( express.static( path.join(__dirname, 'client/build')) )
+    
+    app.get('*', (req, res) => {
+        console.log('404 Not Found')
+        
+        res.sendFile(indexPath)
+    })
+}
 
 app.listen(port, (err) => {
     if (err) console.log(`error: ${err}`)
