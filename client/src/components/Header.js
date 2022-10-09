@@ -21,6 +21,8 @@ const Header = ({
         return <h5 className={className} onClick={onClick}>{children}</h5>
     case 'h6':
         return <h6 className={className} onClick={onClick}>{children}</h6>
+    default:
+        return <h1 className={className} onClick={onClick}>{children}</h1>
   }
 }
 

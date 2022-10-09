@@ -87,6 +87,9 @@ const Login = () => {
         <Item space={'full'}>
             <Paragraph>Don't have an account? Register <Link to='/accounts/register'>here</Link>.</Paragraph>
         </Item>
+        <Item space={'full'}>
+            <Paragraph>Forgot your password? Reset it <Link to='/accounts/reset-password'>here</Link>.</Paragraph>
+        </Item>
     </Group>
   )
 }

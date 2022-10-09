@@ -17,7 +17,8 @@ require('dotenv').config()
 
 const indexPath = path.join(__dirname, 'client/build/index.html')
 
-const sendVerificationEmail = require('./mailer')
+const sendVerificationEmail = require('./mailer').sendVerificationEmail
+const sendForgotPasswordEmail = require('./mailer').sendPasswordForgotEmail
 
 const port = process.env.NODE_ENV === "production" ? process.env.PORT : 8000
 
@@ -304,12 +305,23 @@ app.patch('/api/auth/update/', checkToken, (req, res) => {
 
     const { email, name, username, age } = req.body
 
-    pool.query('UPDATE "user" SET name = $1, email = $2, age = $3, username = $4 WHERE username = $5', [name, email, age, username, req.user.username], (err, results) => {
+    const accessToken = generateToken({ username: username }, tokenTypes.access)
+    const refreshToken = generateToken({ username: username }, tokenTypes.refresh)
+
+    pool.query('SELECT * FROM "user" WHERE username = $1', [req.user.username], (err, results) => {
         if (err) throw err
 
+        if (results.rows[0].email !== email) {
+            pool.query('UPDATE "user" SET verified = FALSE WHERE username = $1', [req.user.username], (errt, resultst) => {
+                if (errt) throw errt
 
-        const accessToken = generateToken({ username: username }, tokenTypes.access)
-        const refreshToken = generateToken({ username: username }, tokenTypes.refresh)
+                sendVerificationEmail(email, accessToken, refreshToken, results.rows[0].uid)
+            })
+        }
+    })
+
+    pool.query('UPDATE "user" SET name = $1, email = $2, age = $3, username = $4 WHERE username = $5', [name, email, age, username, req.user.username], (err, results) => {
+        if (err) throw err
 
         addRefreshToken(refreshToken)
 
@@ -447,12 +459,46 @@ app.patch('/api/auth/verify', checkToken, (req, res) => {
             'error': 'Incorrect or invalid uid provided'
         })
 
+        pool.query('SELECT * FROM "user" WHERE uid = $1', [uid], (err, resultsu) => {
+            if (err) throw err
+
+            if (resultsu.rows.length < 1) return res.status(200).send({
+                'error': "Incorrect or invalid uid"
+            })
+
+            if (results.rows[0].username !== resultsu.rows[0].username) return res.status(200).send({
+                'error': "Incorrect or invalid username"
+            })
+        })
+
         pool.query('UPDATE "user" SET verified = TRUE WHERE uid = $1', [uid], (err, results) => {
             if (err) throw err
 
             return res.status(200).send({
                 'message': 'User was updated successfully!'
             })
+
+        })
+    })
+})
+
+app.post('/api/auth/resend-verify', (req, res) => {
+    const { email } = req.body
+
+    if (!email) return res.status(200).send({
+        'error': 'Email is required'
+    })
+
+    pool.query('SELECT * FROM "user" WHERE email = $1', [email], (err, results) => {
+        if (err) throw err
+
+        const accessToken = generateToken({ username: results.rows[0].username }, tokenTypes.access)
+        const refreshToken = generateToken({ username: results.rows[0].username }, tokenTypes.refresh)
+
+        sendVerificationEmail(email, accessToken, refreshToken, results.rows[0].uid)
+
+        return res.status(200).send({
+            'message': 'Email resent successfully!'
         })
     })
 })
@@ -467,6 +513,96 @@ if (process.env.NODE_ENV == "production") {
     })
 }
 
+app.get('/api/auth/user/profile/:username', (req, res) => {
+    const username = req.params.username
+
+    if (!username) return res.status(200).send({
+        'error': 'No username provided'
+    })
+
+    pool.query('SELECT * FROM "user" WHERE username = $1', [username], (err, results) => {
+        if (err) throw err
+
+        res.status(200).send(results.rows[0])
+    })
+})
+
+app.post('/api/auth/forgotpassword', (req, res) => {
+    const { email } = req.body
+
+    if (!email) return res.status(200).send({
+        'error': 'No email to send forgot password email'
+    })
+
+    pool.query('SELECT * FROM "user" WHERE email = $1', [email], (err, results) => {
+        if (err) throw err
+
+        if (results.rows.length < 1) return res.status(200).send({
+            'error': 'That email does not exist'
+        })
+
+        sendForgotPasswordEmail(email, results.rows[0].username, results.rows[0].uid)
+
+        return res.status(200).send({
+            'message': 'Email sent successfully!'
+        })
+    })
+})
+
+app.patch('/api/auth/update/forgot-password', async (req, res) => {
+    const { username, email, uid, password, passwordc } = req.body
+
+    if (!username) return res.status(200).send({
+        'error': 'Username is required'
+    })
+
+    if (!email) return res.status(200).send({
+        'error': 'Email is required'
+    })
+
+    if (!uid) return res.status(200).send({
+        'error': 'Uid is required'
+    })
+
+    if (!password) return res.status(200).send({
+        'error': 'Password is required'
+    })
+
+    if (!passwordc) return res.status(200).send({
+        'error': 'Password confirm is required'
+    })
+
+    if (password !== passwordc) return res.status(200).send({
+        'error': 'Password and password confirm do not match'
+    })
+
+    pool.query('SELECT * FROM "user" WHERE uid = $1', [uid], (err, results) => {
+        if (err) throw err
+
+        if (results.rows[0].username !== username) return res.status(200).send({
+            'error': 'Incorrect or invalid username'
+        })
+
+        pool.query('SELECT * FROM "user" WHERE username = $1', [username], async (err, results) => {
+            if (err) throw err
+
+            if (results.rows[0].uid !== uid) return res.status(200).send({
+                'error': 'Incorrect or invalid uid'
+            })
+
+            const salt = await bcrypt.genSalt()
+            const hashedPassword = await bcrypt.hash(password, salt)
+
+            pool.query('UPDATE "user" SET password = $1 WHERE username = $2', [hashedPassword, username], (err, results) => {
+                if (err) throw err
+
+                return res.status(200).send({
+                    'message': 'Password changed successfully! Now you can log in!'
+                })
+            })
+        })
+    })
+})
 
 app.listen(port, (err) => {
     if (err) console.log(`error: ${err}`)

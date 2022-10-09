@@ -10,3 +10,5 @@ CREATE TABLE "user" (
 CREATE TABLE refreshToken (
     token TEXT NOT NULL
 );
+
+CREATE TABLE 

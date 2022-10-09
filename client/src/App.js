@@ -5,8 +5,11 @@ import Register from './pages/Register';
 import Navbar from './components/Navbar';
 import ChangePassword from './pages/ChangePassword';
 import Profile from './pages/Profile';
+import OtherUserProfile from './pages/OtherUserProfile';
 import DeleteAccount from './pages/DeleteAccount';
 import VerifyEmail from './pages/VerifyEmail';
+import ResetPasswordEmail from './pages/ResetPasswordEmail';
+import ResetPassword from './pages/ResetPassword';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 function App() {
@@ -22,6 +25,9 @@ function App() {
           <Route path='/accounts/profile' element={<Profile />} />
           <Route path='/accounts/delete-account' element={<DeleteAccount />} />
           <Route path='/accounts/verify/:uid/:rtoken/:atoken' element={<VerifyEmail />} />
+          <Route path='/accounts/profile/:username' element={<OtherUserProfile />} />
+          <Route path='/accounts/reset-password/' element={<ResetPasswordEmail />} />
+          <Route path='/accounts/reset-password/:email/:username/:uid/' element={<ResetPassword />} />
           <Route path='*' element={<p>404 Page Not Found</p>} />
         </Routes>
       </Router>

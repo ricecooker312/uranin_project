@@ -3,12 +3,13 @@ import React from 'react'
 const Item = ({
     className,
     space,
-    children
+    children,
+    style
 }) => {
     if (space == 'full') {
         return (
             <>
-                <div className={className}>{children}</div>
+                <div style={style} className={className}>{children}</div>
                 <br />
             </>
         )

@@ -9,6 +9,9 @@ import Item from '../components/Item'
 import Button from '../components/Button'
 import Header from '../components/Header'
 import Paragraph from '../components/Paragraph'
+import Alert from '../components/Alert'
+
+import './css/Home.css'
 
 const Home = () => {
   const [user, setUser] = useState(null)
@@ -49,16 +52,36 @@ const Home = () => {
     }
   }, [])
 
+  const resendVerificationEmail = () => {
+    const resendEmailPayload = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        email: email
+      })
+    }
+
+    fetch('/api/auth/resend-verify', resendEmailPayload)
+    .then(res => res.json())
+    .then(json => {
+      if (json.error) console.log(json.error)
+      else if (json.message) console.log(json.message)
+    })
+  }
+
   if (authenticated) {
     if (user !== null) return (
       <Group>
         {verified ? (
-          <Item className={'center'}>
-            <Paragraph>Your email {email} has been verified</Paragraph>
-          </Item>
+          <Item></Item>
         ) : (
-          <Item className={'center'}>
-            <Paragraph>We have a sent a verification email to {email}. Please check your inbox.</Paragraph>
+          <Item className={'center alert-container'}>
+            <Alert closable atype={'warning'}>We have sent a verification email to <b>{email}</b>. Please check your inbox. <Link style={{
+              color: 'black'
+            }} to='/' onClick={resendVerificationEmail}>Resend email</Link></Alert>
           </Item>
         )}
         <Item className={'center'}>

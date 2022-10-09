@@ -13,8 +13,7 @@ const VerifyEmail = () => {
   useEffect(() => {
     if (!isAuthenticated()) navigate('/')
     else {
-      if (localStorage.getItem("rtoken") === rtoken) {
-        const atl = refreshToken(rtoken)
+      const atl = refreshToken(rtoken)
 
         const verifyEmailPayload = {
           method: 'PATCH',
@@ -34,9 +33,6 @@ const VerifyEmail = () => {
           if (json.error) console.log('Error: ' + json.error)
           else setVerified(true)
         })
-      } else {
-        console.log('Error: Invalid or incorrect refresh token')
-      }
     }
   })
 
