@@ -3,7 +3,7 @@ require('dotenv').config()
 const nodemailer = require('nodemailer')
 
 const sendVerificationEmail = (email, atoken, rtoken, uid) => {
-    const urlStarter = process.env.NODE_ENV === "production" ? 'https://uranin.herokuapp.com/accounts/verify/' : 'http://localhost:3000/accounts/verify'
+    const urlStarter = process.env.NODE_ENV === "production" ? 'https://uranin.herokuapp.com/accounts/verify' : 'http://localhost:3000/accounts/verify'
     const url = `${urlStarter}/${uid}/${rtoken}/${atoken}`
 
     const transport = nodemailer.createTransport({
@@ -49,7 +49,7 @@ const sendVerificationEmail = (email, atoken, rtoken, uid) => {
 }
 
 const sendPasswordForgotEmail = (email, username, uid) => {
-    const urlStarter = process.env.NODE_ENV === "production" ? 'https://uranin.herokuapp.com/accounts/reset-password/' : 'http://localhost:3000/accounts/reset-password'
+    const urlStarter = process.env.NODE_ENV === "production" ? 'https://uranin.herokuapp.com/accounts/reset-password' : 'http://localhost:3000/accounts/reset-password'
     const url = `${urlStarter}/${email}/${username}/${uid}`
 
     const transport = nodemailer.createTransport({
