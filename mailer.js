@@ -7,7 +7,7 @@ const sendVerificationEmail = (email, atoken, rtoken, uid) => {
     const url = `${urlStarter}/${uid}/${rtoken}/${atoken}`
 
     const transport = nodemailer.createTransport({
-        service: 'hotmail',
+        service: 'gmail',
         auth: {
             user: process.env.EMAIL_USERNAME,
             pass: process.env.EMAIL_PASSWORD
@@ -53,7 +53,7 @@ const sendPasswordForgotEmail = (email, username, uid) => {
     const url = `${urlStarter}/${email}/${username}/${uid}`
 
     const transport = nodemailer.createTransport({
-        service: 'hotmail',
+        service: 'gmail',
         auth: {
             user: process.env.EMAIL_USERNAME,
             pass: process.env.EMAIL_PASSWORD
