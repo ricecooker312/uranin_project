@@ -18,7 +18,7 @@ const sendVerificationEmail = (email, atoken, rtoken, uid) => {
     })
 
     const options = {
-        from: process.env.EMAIL_USERNAME,
+        from: 'reallybigbro121@gmail.com',
         to: email,
         subject: 'Verify Your Uranin Account',
         html: `<!DOCTYPE html>
@@ -35,7 +35,7 @@ const sendVerificationEmail = (email, atoken, rtoken, uid) => {
         </head>
         <body>
         <h1>Verify Your Uranin Account</h1>
-        <p>You have made an account on Uranin. Please click the button below to verify your account. If you did not sign up for an account on Uranin, please let us know at guywhaleienshark@outlook.com</p>
+        <p>You have made an account on Uranin. Please click the button below to verify your account. If you did not sign up for an account on Uranin, please let us know at reallybigbro121@gmail.com</p>
         <br />
         <a href=${url}>Verify Your Account</a>
         </body>
@@ -61,7 +61,7 @@ const sendPasswordForgotEmail = (email, username, uid) => {
     })
 
     const options = {
-        from: 'guywhaleinshark@outlook.com',
+        from: 'reallybigbro121@gmail.com',
         to: email,
         subject: "Reset Your Password",
         html: `<!DOCTYPE html>
