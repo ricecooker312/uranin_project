@@ -21,7 +21,6 @@ export const refreshToken = (token) => {
     fetch('/api/auth/refresh', refreshPayload)
     .then(res => res.json())
     .then(data => {
-        localStorage.clear()
         localStorage.setItem("rtoken", token)
         localStorage.setItem("atoken", data.newAccessToken)
     })

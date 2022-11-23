@@ -101,6 +101,20 @@ const checkToken = (req, res, next) => {
     })
 }
 
+const checkClubExist = (req, res, next) => {
+    const clubId = parseInt(req.params.clubId)
+
+    pool.query('SELECT * FROM club WHERE id = $1', [clubId], (err, results) => {
+        if (err) throw err
+
+        if (results.rows.length == 0) return res.status(400).send({
+            'error': 'That club does not exist'
+        })
+
+        return next()
+    })
+}
+
 app.post('/api/auth/register', async (req, res) => {
     const { name, email, username, password, age } = req.body
 
@@ -589,6 +603,165 @@ app.patch('/api/auth/update/forgot-password', async (req, res) => {
                 return res.status(200).send({
                     'message': 'Password changed successfully! Now you can log in!'
                 })
+            })
+        })
+    })
+})
+
+app.get('/api/clubs/all', (req, res) => {
+    pool.query('SELECT * FROM club', (err, results) => {
+        if (err) throw err
+
+        return res.status(200).send(results.rows)
+    })
+})
+
+app.post('/api/clubs/create', checkToken, (req, res) => {
+    const { title, description, priceToJoin } = req.body
+
+    if (!title) return res.status(400).send({
+        'error': 'Title is required'
+    })
+
+    if (!description) return res.status(400).send({
+        'error': 'Description is required'
+    })
+
+    if (!priceToJoin) return res.status(400).send({
+        'error': 'Price to join is required'
+    })
+
+    const priceSplitTest = priceToJoin.split('.')
+
+    if (priceSplitTest.length > 1) return res.status(400).send({
+        'error': 'Price to join must be a whole number'
+    })
+
+    const priceToJoinReal = parseInt(priceToJoin)
+
+    pool.query('INSERT INTO club (title, description, price_to_join, members, leader) VALUES ($1, $2, $3, $4, $5)', [title, description, priceToJoinReal, [], req.user.username], (err, results) => {
+        if (err) throw err
+
+        return res.status(200).send({
+            'message': "Club created successfully!"
+        })
+    })
+})
+
+app.patch('/api/clubs/:clubId/addmember', (req, res) => {
+    const clubId = parseInt(req.params.clubId)
+
+    const { memberUsername } = req.body
+
+    if (!memberUsername) return res.status(400).send({
+        'error': 'Member username is required'
+    })
+
+    pool.query('SELECT * FROM "user" WHERE username = $1', [memberUsername], (err, results) => {
+        if (err) throw err
+
+        if (results.rows.length == 0) return res.status(400).send({
+            'error': 'That member does not exist'
+        })
+
+        pool.query('SELECT * FROM club WHERE id = $1', [clubId], (errt, resultst) => {
+            if (errt) throw errt
+
+            if (resultst.rows.length == 0) return res.status(400).send({
+                'error': 'That club does not exist'
+            })
+
+            console.log(resultst.rows[0].members.length)
+
+            for (var i = 0; i < resultst.rows[0].members.length; i++) {
+                const members = resultst.rows[0].members
+
+                if (members[i] == memberUsername) return res.status(400).send({
+                    'error': 'That member is already part of the club'
+                })
+            }
+
+            pool.query('UPDATE club SET members = array_append($1, $2) WHERE id = $3', [resultst.rows.members, memberUsername, clubId], (errth, resultsth) => {
+                if (errth) throw errth
+
+                return res.status(200).send({
+                    'message': 'Member added successfully!'
+                })
+            })
+        })
+    })
+})
+
+app.patch('/api/clubs/:clubId/update', checkClubExist, (req, res) => {
+    const { title, description, priceToJoin } = req.body
+    const clubId = parseInt(req.params.clubId)
+
+    if (!title) return res.status(400).send({
+        'error': 'Title is required'
+    })
+
+    if (!description) return res.status(400).send({
+        'error': 'Description is required'
+    })
+
+    if (!priceToJoin) return res.status(400).send({
+        'error': 'Price to join is required'
+    })
+
+    const priceSplitTest = priceToJoin.split('.')
+
+    if (priceSplitTest.length > 1) return res.status(400).send({
+        'error': 'Price to join must be a whole number'
+    })
+
+    const priceToJoinReal = parseInt(priceToJoin)
+
+    pool.query('UPDATE club SET title = $1, description = $2, price_to_join = $3 WHERE id = $4', [title, description, priceToJoinReal, clubId], (err, results) => {
+        if (err) throw err
+
+        return res.status(200).send({
+            'message': 'Club updated successfully!'
+        })
+    })
+})
+
+app.delete('/api/clubs/:clubId/delete', checkClubExist, (req, res) => {
+    const clubId = parseInt(req.params.clubId)
+
+    pool.query('DELETE FROM club WHERE id = $1', [clubId], (err, results) => {
+        if (err) throw err
+
+        return res.status(200).send({
+            'message': 'Club deleted successfully!'
+        })
+    })
+})
+
+app.delete('/api/clubs/all/delete', (req, res) => {
+    pool.query('DELETE FROM club', (err, results) => {
+        if (err) throw err
+
+        return res.status(200).send({
+            'message': "All clubs deleted successfully!"
+        })
+    })
+})
+
+app.delete('/api/clubs/all/:leader/delete', (req, res) => {
+    const leader = req.params.leader
+
+    pool.query('SELECT * FROM club WHERE leader = $1', [leader], (err, results) => {
+        if (err) throw err
+
+        if (results.rows.length == 0) return res.status(400).send({
+            'error': "That leader does not exist or does not have a club"
+        })
+
+        pool.query('DELETE FROM club WHERE leader = $1', [leader], (errt, resultst) => {
+            if (errt) throw errt
+
+            return res.status(200).send({
+                'message': 'All clubs deleted successfully!'
             })
         })
     })

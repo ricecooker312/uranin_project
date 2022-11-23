@@ -41,6 +41,8 @@ const Home = () => {
       fetch('/api/auth/user/profile', profilePayload)
       .then(res => res.json())
       .then(json => {
+        console.log(json)
+
         if (json.verified === false) {
           setVerified(false)
           setEmail(json.email)
@@ -53,6 +55,8 @@ const Home = () => {
   }, [])
 
   const resendVerificationEmail = () => {
+    console.log(email)
+
     const resendEmailPayload = {
       method: 'POST',
       headers: {
@@ -73,7 +77,10 @@ const Home = () => {
   }
 
   if (authenticated) {
+
+    console.log(email)
     if (user !== null) return (
+      
       <Group>
         {verified ? (
           <Item></Item>
