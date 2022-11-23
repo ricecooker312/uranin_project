@@ -89,6 +89,9 @@ const Navbar = () => {
                     <li className='item'>
                         <Link className='a-tag' to='/accounts/delete-account'>Delete Account</Link>
                     </li>
+                    <li className='item'>
+                        <Link className='a-tag' to='/accounts/delete-account'>Add Club</Link>
+                    </li>
                 </ul>
             </Group>
         </nav>

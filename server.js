@@ -334,15 +334,23 @@ app.patch('/api/auth/update/', checkToken, (req, res) => {
         }
     })
 
-    pool.query('UPDATE "user" SET name = $1, email = $2, age = $3, username = $4 WHERE username = $5', [name, email, age, username, req.user.username], (err, results) => {
-        if (err) throw err
+    pool.query('SELECT * FROM "user" WHERE email = $1', [email], (errt, resultst) => {
+        if (errt) throw errt
 
-        addRefreshToken(refreshToken)
+        if (resultst.rows.length > 0) return res.status(200).send({
+            'error': 'That username already exists'
+        })
 
-        return res.status(200).send({
-            'message': "User updated successfully!",
-            'accessToken': accessToken,
-            'refreshToken': refreshToken
+        pool.query('UPDATE "user" SET name = $1, email = $2, age = $3, username = $4 WHERE username = $5', [name, email, age, username, req.user.username], (err, results) => {
+            if (err) throw err
+    
+            addRefreshToken(refreshToken)
+    
+            return res.status(200).send({
+                'message': "User updated successfully!",
+                'accessToken': accessToken,
+                'refreshToken': refreshToken
+            })
         })
     })
 })
