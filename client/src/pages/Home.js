@@ -55,8 +55,6 @@ const Home = () => {
   }, [])
 
   const resendVerificationEmail = () => {
-    console.log(email)
-
     const resendEmailPayload = {
       method: 'POST',
       headers: {
@@ -77,10 +75,7 @@ const Home = () => {
   }
 
   if (authenticated) {
-
-    console.log(email)
     if (user !== null) return (
-      
       <Group>
         {verified ? (
           <Item></Item>

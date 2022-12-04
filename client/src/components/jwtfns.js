@@ -71,5 +71,5 @@ export const checkVerified = (rtoken) => {
         else if (json.verified === true) localStorage.setItem("verified", true)
     })
 
-    localStorage.getItem("verified")
+    return localStorage.getItem("verified")
 }

@@ -4,7 +4,8 @@ const Item = ({
     className,
     space,
     children,
-    style
+    style,
+    center
 }) => {
     if (space == 'full') {
         return (

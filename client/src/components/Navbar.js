@@ -90,7 +90,7 @@ const Navbar = () => {
                         <Link className='a-tag' to='/accounts/delete-account'>Delete Account</Link>
                     </li>
                     <li className='item'>
-                        <Link className='a-tag' to='/accounts/delete-account'>Add Club</Link>
+                        <Link className='a-tag' to='/clubs/add-club'>Add Club</Link>
                     </li>
                 </ul>
             </Group>

@@ -10,6 +10,7 @@ import DeleteAccount from './pages/DeleteAccount';
 import VerifyEmail from './pages/VerifyEmail';
 import ResetPasswordEmail from './pages/ResetPasswordEmail';
 import ResetPassword from './pages/ResetPassword';
+import AddClub from './pages/club/AddClub';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
           <Route path='/accounts/profile/:username' element={<OtherUserProfile />} />
           <Route path='/accounts/reset-password/' element={<ResetPasswordEmail />} />
           <Route path='/accounts/reset-password/:email/:username/:uid/' element={<ResetPassword />} />
+          <Route path='/clubs/add-club' element={<AddClub />} />
           <Route path='*' element={<p>404 Page Not Found</p>} />
         </Routes>
       </Router>

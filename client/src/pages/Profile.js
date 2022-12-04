@@ -65,6 +65,7 @@ const Profile = () => {
   const updateProfile = () => {
     if (email.split('@').length !== 2) setError('That email is invalid')
     else {
+
         const rtl = localStorage.getItem("rtoken")
         const atl = refreshToken(rtl)
 
@@ -86,6 +87,7 @@ const Profile = () => {
         fetch('/api/auth/update', profileChangePayload)
         .then(res => res.json())
         .then(data => {
+
             if (data.error) {
                 setMessage(undefined)
                 setError(data.error)
@@ -115,7 +117,6 @@ const Profile = () => {
         </Item>
         <Item space={'full'}>
             <Textfield className='profile-field' label={'Username'} type={'text'} defaultValue={username} onChange={(e) => {
-                console.log(e.target.value)
                 if (e.target.value === "") setUsername(null)
                 else setUsername(e.target.value)
             }} />
