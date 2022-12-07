@@ -775,16 +775,6 @@ app.delete('/api/clubs/all/:leader/delete', (req, res) => {
     })
 })
 
-if (process.env.NODE_ENV == "production") {
-    app.use( express.static( path.join(__dirname, 'client/build')) )
-    
-    app.get('*', (req, res) => {
-        console.log('404 Not Found')
-        
-        res.sendFile(indexPath)
-    })
-}
-
 app.listen(port, (err) => {
     if (err) console.log(`error: ${err}`)
     console.log(`Server is listening on port ${port}`)
