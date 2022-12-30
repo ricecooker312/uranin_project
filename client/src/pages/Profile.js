@@ -87,6 +87,7 @@ const Profile = () => {
         fetch('/api/auth/update', profileChangePayload)
         .then(res => res.json())
         .then(data => {
+            console.log(data)
 
             if (data.error) {
                 setMessage(undefined)

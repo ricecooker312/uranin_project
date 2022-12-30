@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS club (
     
     CONSTRAINT leader_fk
         FOREIGN KEY (leader)
-            REFERENCES "user"(username)
+            REFERENCES "user"(id) ON DELETE CASCADE
 );
 
 CREATE TABLE ac

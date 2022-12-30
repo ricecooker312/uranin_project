@@ -322,6 +322,9 @@ app.patch('/api/auth/update/', checkToken, (req, res) => {
     const accessToken = generateToken({ username: username }, tokenTypes.access)
     const refreshToken = generateToken({ username: username }, tokenTypes.refresh)
 
+    console.log('req.user.username', req.user.username)
+    console.log('username', username)
+
     pool.query('SELECT * FROM "user" WHERE username = $1', [req.user.username], (err, results) => {
         if (err) throw err
 
@@ -332,25 +335,31 @@ app.patch('/api/auth/update/', checkToken, (req, res) => {
                 sendVerificationEmail(email, accessToken, refreshToken, results.rows[0].uid)
             })
         }
-    })
 
-    pool.query('SELECT * FROM "user" WHERE email = $1', [email], (errt, resultst) => {
-        if (errt) throw errt
-
-        if (resultst.rows.length > 0) return res.status(200).send({
-            'error': 'That username already exists'
-        })
-
-        pool.query('UPDATE "user" SET name = $1, email = $2, age = $3, username = $4 WHERE username = $5', [name, email, age, username, req.user.username], (err, results) => {
-            if (err) throw err
+        pool.query('SELECT * FROM "user" WHERE username = $1', [username], (errt, resultst) => {
+            if (errt) throw errt
     
-            addRefreshToken(refreshToken)
-    
-            return res.status(200).send({
-                'message': "User updated successfully!",
-                'accessToken': accessToken,
-                'refreshToken': refreshToken
-            })
+            if (req.user.username !== username) {
+                if (resultst.rows.length > 0) return res.status(200).send({
+                    'error': 'That username already exists'
+                })
+            } else {
+                pool.query('UPDATE club SET leader = $1', [resultst.rows[0].id], (errth, resultsth) => {
+                    if (errth) throw errth
+        
+                    pool.query('UPDATE "user" SET name = $1, email = $2, age = $3, username = $4 WHERE username = $5', [name, email, age, username, req.user.username], (err, results) => {
+                        if (err) throw err
+                
+                        addRefreshToken(refreshToken)
+                
+                        return res.status(200).send({
+                            'message': "User updated successfully!",
+                            'accessToken': accessToken,
+                            'refreshToken': refreshToken
+                        })
+                    })
+                })
+            }
         })
     })
 })
@@ -624,8 +633,42 @@ app.get('/api/clubs/all', (req, res) => {
     })
 })
 
-app.post('/api/clubs/create', checkToken, (req, res) => {
+app.get('/api/clubs/:leader/all', (req, res) => {
+    const leader = parseInt(req.params.leader)
+
+    pool.query('SELECT * FROM club WHERE leader = $1', [leader], (err, results) => {
+        if (err) throw err
+
+        if (results.rows.length === 0) return res.status(200).send({
+            'error': 'That leader does not exist or does not have a club'
+        })
+
+        pool.query('SELECT * FROM "user" WHERE id = $1', [leader], (err, results) => {
+            if (err) throw err
+
+            if (results.rows.length === 0) return res.status(200).send({
+                'error': 'That leader does not exist'
+            })
+
+            const username = results.rows[0].username
+
+            results.rows.push(username)
+
+            console.log('results.rows', results.rows)
+
+            return res.status(200).send(results.rows)
+        })
+    })
+})
+
+app.post('/api/clubs/create/:leader', (req, res) => {
     const { title, description, priceToJoin } = req.body
+
+    const leader = parseInt(req.params.leader)
+
+    if (!leader) return res.status(400).send({
+        'error': 'Leader is required'
+    })
 
     if (!title) return res.status(400).send({
         'error': 'Title is required'
@@ -647,11 +690,19 @@ app.post('/api/clubs/create', checkToken, (req, res) => {
 
     const priceToJoinReal = parseInt(priceToJoin)
 
-    pool.query('INSERT INTO club (title, description, price_to_join, members, leader) VALUES ($1, $2, $3, $4, $5)', [title, description, priceToJoinReal, [], req.user.username], (err, results) => {
+    pool.query('SELECT * FROM club WHERE leader = $1', [leader], (err, results) => {
         if (err) throw err
 
-        return res.status(200).send({
-            'message': "Club created successfully!"
+        if (results.rows.length < 1) return res.status(400).send({
+            'error': 'That leader does not exist or does not have a club'
+        })
+
+        pool.query('INSERT INTO club (title, description, price_to_join, members, leader) VALUES ($1, $2, $3, $4, $5)', [title, description, priceToJoinReal, [], leader], (err, results) => {
+            if (err) throw err
+    
+            return res.status(200).send({
+                'message': "Club created successfully!"
+            })
         })
     })
 })
@@ -678,8 +729,6 @@ app.patch('/api/clubs/:clubId/addmember', (req, res) => {
             if (resultst.rows.length == 0) return res.status(400).send({
                 'error': 'That club does not exist'
             })
-
-            console.log(resultst.rows[0].members.length)
 
             for (var i = 0; i < resultst.rows[0].members.length; i++) {
                 const members = resultst.rows[0].members
@@ -756,7 +805,7 @@ app.delete('/api/clubs/all/delete', (req, res) => {
 })
 
 app.delete('/api/clubs/all/:leader/delete', (req, res) => {
-    const leader = req.params.leader
+    const leader = parseInt(req.params.leader)
 
     pool.query('SELECT * FROM club WHERE leader = $1', [leader], (err, results) => {
         if (err) throw err
