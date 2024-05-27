@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/uranin_project/static/css/main.a677e307.css",
+    "main.js": "/uranin_project/static/js/main.f2323109.js",
+    "static/js/496.7623442f.chunk.js": "/uranin_project/static/js/496.7623442f.chunk.js",
+    "index.html": "/uranin_project/index.html",
+    "main.a677e307.css.map": "/uranin_project/static/css/main.a677e307.css.map",
+    "main.f2323109.js.map": "/uranin_project/static/js/main.f2323109.js.map",
+    "496.7623442f.chunk.js.map": "/uranin_project/static/js/496.7623442f.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a677e307.css",
+    "static/js/main.f2323109.js"
+  ]
+}
