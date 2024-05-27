@@ -322,8 +322,6 @@ app.patch('/api/auth/update/', checkToken, (req, res) => {
     const accessToken = generateToken({ username: username }, tokenTypes.access)
     const refreshToken = generateToken({ username: username }, tokenTypes.refresh)
 
-    console.log('req.user.username', req.user.username)
-    console.log('username', username)
 
     pool.query('SELECT * FROM "user" WHERE username = $1', [req.user.username], (err, results) => {
         if (err) throw err

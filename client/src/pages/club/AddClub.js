@@ -18,6 +18,7 @@ const AddClub = () => {
   const [name, setName] = useState(null)
   const [desc, setDesc] = useState(null)
   const [price, setPrice] = useState(null)
+  const [id, setId] = useState(null)
 
   useEffect(() => {
     const rtl = localStorage.getItem("rtoken")
@@ -61,6 +62,43 @@ const AddClub = () => {
     })
   }
 
+  const addClub = () => {
+    const rtl = localStorage.getItem("rtoken")
+    const atl = refreshToken(rtl)
+
+    const profilePayload = {
+      headers: {
+        'Authorization': `Bearer ${atl}`
+      }
+    }
+
+    fetch('/api/auth/user/profile', profilePayload)
+    .then(res => res.json())
+    .then(json => {
+      console.log(json)
+      setId(json.id)
+    })
+
+    const clubPayload = {
+      method: 'POST',
+     headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+     },
+     body: JSON.stringify({
+      title: name,
+      descripton: desc,
+      priceToJoin: price
+     })
+    }
+
+    setTimeout(() => {}, )
+
+    fetch(`/api/clubs/create/${id}`, clubPayload)
+    .then(res => res.json())
+    .then(json => console.log(json))
+  }
+
   if (verified == null) return (
     <Item>
       Loading...
@@ -101,7 +139,7 @@ const AddClub = () => {
         }} />
       </Item>
       <Item space={'full'}>
-        <Button>Create Club</Button>
+        <Button style={'primary'} size='medium' onClick={addClub}>Create Club</Button>
       </Item>
     </Group>
   )
