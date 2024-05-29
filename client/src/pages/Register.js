@@ -76,7 +76,7 @@ const Register = () => {
     <Group className={'register-container'}>
         <Alert atype={'error'}>{error}</Alert>
         <Item className={'center'} space='full'>
-            <Header type={'h1'}>Register</Header>
+            <Header type={'h1'}>Login</Header>
         </Item>
         <Group className={'flex-area'}>
         <Group className={'second-half'}>
